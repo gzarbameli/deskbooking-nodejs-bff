@@ -40,3 +40,24 @@ spec:
   - protocol: TCP
     port: 3002
     targetPort: 3002
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bff-nodejs-ingress
+  namespace: desk-reservation-app
+  labels:
+    name: bff-nodejs-ingress
+spec:
+  rules:
+  - host: bff-desk-reservation-app.example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: bff-nodejs
+            port: 
+              number: 3002
