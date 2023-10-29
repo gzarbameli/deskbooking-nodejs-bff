@@ -1,0 +1,18 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker Image
+      run: docker build . --file Dockerfile --tag gzarba/desk-reservation-app:bff-nodejs
+    - name: Push Docker Image
+      run: docker push gzarba/desk-reservation-app:bff-nodejs
+    
