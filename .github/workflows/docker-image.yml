@@ -9,10 +9,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker Image
-      run: docker build . --file Dockerfile --tag gzarba/desk-reservation-app:bff-nodejs
-    - name: Push Docker Image
-      run: docker push gzarba/desk-reservation-app:bff-nodejs
-    
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t gzarba/desk-reservation-app:bff-nodejs .
+        docker push gzarba/desk-reservation-app:bff-nodejs
