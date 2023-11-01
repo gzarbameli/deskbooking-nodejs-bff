@@ -15,4 +15,4 @@ RUN npm install
 EXPOSE 3002
 
 # Comando per avviare il server Fastify
-CMD ["node", "server.js"]
+CMD ["node", "--require", "./instrumentation.js", "server.js"]

@@ -24,6 +24,7 @@ spec:
       containers:
       - name: bff-nodejs
         image: gzarba/desk-reservation-app:bff-nodejs
+        imagePullPolicy: Always
         ports:
         - containerPort: 3002
 
