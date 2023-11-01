@@ -7,6 +7,7 @@ WORKDIR /
 # Copia i file del tuo progetto nel container
 COPY package*.json ./
 COPY server.js ./
+COPY instrumentation.js ./
 
 # Installa le dipendenze del progetto
 RUN npm install
