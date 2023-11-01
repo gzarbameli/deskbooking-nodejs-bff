@@ -16,6 +16,8 @@ spec:
       app: bff-nodejs
   template:
     metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-nodejs: "nodejs-instrumentation"
       labels:
         app: bff-nodejs
     spec:
