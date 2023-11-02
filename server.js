@@ -8,7 +8,6 @@ const goBackend = 'http://backend-go:5001'
 fastify.register(cors, {
     origin: '*',
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Authorization'
 });
 
 fastify.post('/login', async (request, reply) => {
@@ -44,7 +43,6 @@ fastify.post('/book', async (request, reply) => {
 
 fastify.post('/myreservations', async (request, reply) => {
   try {
-    console.log(request)
     // Inoltra la richiesta al backend Python per la route "/myreservations"
     const response = await axios.post(`${pythonBackend}/myreservations`, request.body);
     reply.send(response.data);
