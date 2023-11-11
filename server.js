@@ -41,10 +41,12 @@ fastify.post('/book', async (request, reply) => {
   }
 });
 
-fastify.post('/myreservations', async (request, reply) => {
+fastify.get('/myreservations', async (request, reply) => {
   try {
+    const employee_id = request.query.employee_id; // Ottieni il parametro employee_id dall'URL
+
     // Inoltra la richiesta al backend Python per la route "/myreservations"
-    const response = await axios.post(`${pythonBackend}/myreservations`, request.body);
+    const response = await axios.get(`${pythonBackend}/myreservations?employee_id=${employee_id}`);
     reply.send(response.data);
   } catch (error) {
     reply.code(500).send({ error: 'Internal Server Error' });
