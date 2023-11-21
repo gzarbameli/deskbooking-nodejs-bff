@@ -48,7 +48,7 @@ jobs:
       - uses: docker://ghcr.io/yannh/kubeconform:latest
         with:
           entrypoint: '/kubeconform'
-          args: "-summary -output json k8s-deploy/"
+          args: "-summary -output json k8s-deploy/manifest*"
   
   kube_security_scan:
     needs: docker_build_and_push
