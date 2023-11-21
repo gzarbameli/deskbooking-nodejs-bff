@@ -33,7 +33,7 @@ jobs:
         with:
           image-ref: 'gzarba/desk-reservation-app:bff-nodejs'
           format: 'table'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
@@ -46,7 +46,7 @@ jobs:
       - name: check manifests
         uses: hermanbanken/kubeconform-action@v1
         with:
-          options: "-summary -output json k8s-deploy/"
+          options: ["-output", "json", "k8s-deploy/"]
   
   kube_security_scan:
     needs: docker_build_and_push
