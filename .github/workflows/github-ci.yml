@@ -38,15 +38,17 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-  kube_validation:
+  kubeconform:
     needs: docker_build_and_push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: check manifests
-        uses: hermanbanken/kubeconform-action@v1
+      - name: login to Github Packages
+        run: echo "${{ github.token }}" | docker login https://ghcr.io -u ${GITHUB_ACTOR} --password-stdin
+      - uses: actions/checkout@v2
+      - uses: docker://ghcr.io/yannh/kubeconform:latest
         with:
-          options: ["-output", "json", "k8s-deploy/"]
+          entrypoint: '/kubeconform'
+          args: "-summary -output json k8s-deploy/"
   
   kube_security_scan:
     needs: docker_build_and_push
