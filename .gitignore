@@ -1,1 +1,3 @@
 node_modules/
+deploy-onboarder.sh
+runner_deployment.yaml

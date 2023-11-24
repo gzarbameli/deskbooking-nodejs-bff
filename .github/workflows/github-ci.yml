@@ -8,6 +8,8 @@ on:
     
 jobs:
 
+  ### DOCKER BUILD & PUSH
+
   docker_build_and_push:
     runs-on: ubuntu-latest
     steps:
@@ -21,6 +23,8 @@ jobs:
       run: |
         docker build -t gzarba/desk-reservation-app:bff-nodejs .
         docker push gzarba/desk-reservation-app:bff-nodejs
+
+  ### DOCKER IMAGE SECURITY SCAN
 
   docker_security_scan:
     needs: docker_build_and_push
@@ -37,8 +41,10 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+  
+  ### KUBERNETES MANIFEST VALIDATION
 
-  kubeconform:
+  kube_validation:
     needs: docker_build_and_push
     runs-on: ubuntu-latest
     steps:
@@ -50,6 +56,8 @@ jobs:
           entrypoint: '/kubeconform'
           args: "-summary -output json k8s-deploy/manifest.yml"
   
+  ### KUBERNETES MANIFEST SECURITY SCAN
+
   kube_security_scan:
     needs: docker_build_and_push
     runs-on: ubuntu-latest
@@ -69,3 +77,19 @@ jobs:
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: results.sarif
+
+  ### ARGOCD DEPLOYMENT ROLLOUT
+
+  argocd_sync:
+    needs: [docker_security_scan, kube_validation, kube_security_scan]
+    runs-on: actions_runner_dev
+    steps:
+      - name: Deployment Sync
+        run: |
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          rm argocd-linux-amd64
+          argocd login argocd-server.argocd.svc.cluster.local --insecure --username  ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+          argocd app actions run "desk-reservation-app-bff-nodejs" restart --kind Deployment |& tee response.txt
+          cat response.txt
+          if [ -s response.txt ]; then exit 1; fi
